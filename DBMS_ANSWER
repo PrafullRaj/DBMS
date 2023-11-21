@@ -1,0 +1,28 @@
+ Q1.SELECT orders.order_number, customers.customer_name
+FROM orders
+JOIN customers ON orders.customer_id = customers.customer_id;
+
+Q2. SELECT ord_no, purch_amt, ord_date, customer_id, salesperson_id
+FROM orders
+JOIN salesman ON orders.salesman_id = salesman.salesman_id
+WHERE salesman.salesman_name = 'Paul';
+
+Q3.SELECT customers.customer_name, customers.city AS customer_city, salesman.salesman_name, salesman.commission
+FROM customers
+JOIN salesman ON customers.salesman_id = salesman.salesman_id;
+
+Q4. SELECT customers.customer_name, customers.city AS customer_city, customers.grade, salesman.salesman_name, salesman.city AS salesman_city
+FROM customers
+JOIN salesman ON customers.salesman_id = salesman.salesman_id
+WHERE customers.grade < 300
+ORDER BY customers.customer_id ASC;
+
+Q5. SELECT ord_no, purch_amt, ord_date, customer_id, salesman_id
+FROM orders
+JOIN salesman ON orders.salesman_id = salesman.salesman_id
+WHERE salesman.city = 'Mumbai';
+
+Q6 SELECT customers.customer_name AS Customer, customers.city AS City
+FROM customers
+JOIN salesman ON customers.salesman_id = salesman.salesman_id
+WHERE salesman.commission BETWEEN 12 AND 14;
