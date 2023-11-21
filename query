@@ -1,0 +1,84 @@
+create database d1002;
+use d1002;
+create table Salesman(Salesman_id int primary key,name varchar(50),city varchar(50),commission decimal(5,2));
+INSERT INTO Salesman VALUES(5001,'Sachin','Chennai',0.15);
+INSERT INTO Salesman VALUES(5002,'Danis','Kolkata',0.13);
+INSERT INTO Salesman VALUES(5005,'Hari','Mumbai',0.11);
+INSERT INTO Salesman VALUES(5006,'Ambar','Kolkata',0.14);
+INSERT INTO Salesman VALUES(5007,'Paul','Mysuru',0.13);
+INSERT INTO Salesman VALUES(5003,'Goutham','Hyderabad',0.12);
+
+CREATE TABLE OrderTable (
+    order_no INT PRIMARY KEY,
+    purch_amt INT,
+    ord_date DATE,
+    cust_id INT,
+    salesman_id INT,
+    FOREIGN KEY (salesman_id) REFERENCES Salesman(Salesman_id)
+);
+insert into OrderTable values(70001,150,'2021-10-05',3005,5002);
+insert into OrderTable values(70009,270,'2021-09-10',3001,5005);
+insert into OrderTable values(70002,65,'2021-10-05',3002,5001);
+insert into OrderTable values(70004,110,'2021-08-17',3009,5003);
+insert into OrderTable values(70007,948,'2021-09-10',3005,5002);
+insert into OrderTable values(70005,2400,'2021-07-27',3007,5001);
+insert into OrderTable values(70010,1983,'2021-10-10',3004,5006);
+insert into OrderTable values(70003,2480,'2021-10-10',3009,5003);
+insert into OrderTable values(70008,5760,'2021-09-10',3002,5001);
+insert into OrderTable values(70012,250,'2021-06-27',3009,5003);
+insert into OrderTable values(70013,3045,'2021-04-25',3002,5001);     
+insert into OrderTable values(70011,75,'2021-08-17',3003,5007);
+
+CREATE TABLE Customer (
+    cust_id INT PRIMARY KEY,
+    cust_name VARCHAR(255),
+    city varchar(255),
+    grade INT,
+     salesman_id INT,
+  foreign key(salesman_id) references Salesman(Salesman_id)
+  );
+
+INSERT INTO Customer (cust_id, cust_name,city, grade, salesman_id)
+VALUES
+    (3002, 'Nandan','chennai', 100, 5001),
+    (3007, 'sunil','chennai', 200, 5001),
+    (3005, 'rick', 'hyderabad',200, 5002),
+    (3008, 'akshay','mumbai', 300, 5002),
+    (3004, 'jyothi', 'kolkatta',300, 5006),
+    (3009, 'murali', 'vizaq',100, 5003),
+    (3003, 'xavier', 'delhi',200, 5007),
+    (3001, 'rihan','mumbai' ,null , 5005);
+    
+SELECT C.cust_name, S.name AS salesman_name, S.city AS salesman_city
+FROM Customer C
+JOIN Salesman S ON C.city = S.city;
+
+SELECT OT.order_no, C.cust_name, OT.cust_id, OT.salesman_id
+FROM OrderTable OT
+JOIN Customer C ON OT.cust_id = C.cust_id
+JOIN Salesman S ON OT.salesman_id = S.Salesman_id
+WHERE C.city <> S.city;
+
+SELECT OT.order_no, OT.purch_amt, OT.ord_date, OT.cust_id, OT.salesman_id
+FROM OrderTable OT
+JOIN Salesman S ON OT.salesman_id = S.Salesman_id
+WHERE S.name = 'Paul';
+
+SELECT C.cust_name, C.city, S.name AS salesman_name, S.commission
+FROM Customer C
+JOIN Salesman S ON C.city = S.city
+WHERE S.commission > 0.12;
+
+SELECT OT.order_no, OT.purch_amt, C.cust_name, C.city
+FROM OrderTable OT
+JOIN Customer C ON OT.cust_id = C.cust_id
+WHERE OT.purch_amt BETWEEN 500 AND 2000;
+
+SELECT OT.order_no, OT.purch_amt, OT.ord_date, OT.cust_id, OT.salesman_id
+FROM OrderTable OT
+JOIN (
+    SELECT cust_id, AVG(purch_amt) AS avg_amount
+    FROM OrderTable
+    GROUP BY cust_id
+) AS AvgAmounts ON OT.cust_id = AvgAmounts.cust_id
+WHERE OT.purch_amt > AvgAmounts.avg_amount;
